@@ -31,6 +31,16 @@ import EventBus from "../eventBus";
 export default {
   name: "Navbar",
   methods: {
+    removeActiveFilterButton() {
+      let dropdown = document.querySelector(".dropdown-content");
+      let dateBtn = dropdown.querySelector(".date");
+      let popularBtn = dropdown.querySelector(".popularity");
+      let votesBtn = dropdown.querySelector(".votes");
+      let arrEle = [dateBtn, popularBtn, votesBtn];
+      Array.from(arrEle).forEach(el => {
+        el.classList.remove("active");
+      });
+    },
     removeActiveLayoutButton() {
       let large = document.querySelector("button.large.grid-size");
       let medium = document.querySelector("button.medium.grid-size");
@@ -59,18 +69,26 @@ export default {
       large.classList.add("active");
     },
     filterByDate() {
+      this.removeActiveFilterButton();
+      document.querySelector("button.filter.date").classList.add("active");
       EventBus.$emit("date-filter");
     },
     filterByPopularity() {
+      this.removeActiveFilterButton();
+      document
+        .querySelector("button.filter.popularity")
+        .classList.add("active");
       EventBus.$emit("popularity-filter");
     },
     filterByVotes() {
+      this.removeActiveButton();
+      document.querySelector("button.filter.votes").classList.add("active");
       EventBus.$emit("votes-filter");
     }
   }
 };
 </script>
-``
+
 <style lang="scss" scoped>
 /* navbar */
 nav.navbar {

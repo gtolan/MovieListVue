@@ -22,6 +22,7 @@ export default {
       rating = Math.ceil(rating);
       let total = 5;
       let counter = 0;
+      this.stars = [];
       //create 5 star elements placing empty stars on top
       while (counter < total) {
         counter++;

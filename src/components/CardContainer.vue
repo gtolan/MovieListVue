@@ -8,8 +8,6 @@
 import axios from "axios";
 import CardItem from "./CardItem";
 import EventBus from "../eventBus";
-const baseUrl =
-  "https://api.themoviedb.org/3/movie/now_playing?api_key=32550221f8c9bddd62cef24aa22975b1&language=en-US&page=1";
 
 export default {
   name: "CardContainer",
@@ -20,20 +18,13 @@ export default {
     return {
       moviesList: [],
       cardSize: "",
-      cardOrder: "date"
+      cardOrder: "date",
+      baseUrl:
+        "https://api.themoviedb.org/3/movie/now_playing?api_key=32550221f8c9bddd62cef24aa22975b1&language=en-US&page=1"
     };
   },
   created() {
-    axios
-      .get(baseUrl)
-      .then(response => {
-        let result = response.data.results;
-        this.moviesList = result;
-        return;
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
+    this.fetchData();
   },
   mounted() {
     EventBus.$on("large-cards", () => {
@@ -59,18 +50,22 @@ export default {
     });
   },
   methods: {
+    fetchData() {
+      //formatted for testing
+      const getPromise = axios.get(this.baseUrl);
+      getPromise
+        .then(response => {
+          let result = response.data.results;
+          this.moviesList = result;
+          return;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+      return getPromise;
+    },
     reverseCardsOrder() {
       this.moviesList.reverse();
-    },
-    removeActiveButton() {
-      let dropdown = document.querySelector(".dropdown-content");
-      let dateBtn = dropdown.querySelector(".date");
-      let popularBtn = dropdown.querySelector(".popularity");
-      let votesBtn = dropdown.querySelector(".votes");
-      let arrEle = [dateBtn, popularBtn, votesBtn];
-      Array.from(arrEle).forEach(el => {
-        el.classList.remove("active");
-      });
     },
     sortByAverageVote(a, b) {
       return a.vote_average > b.vote_average
@@ -92,8 +87,6 @@ export default {
         : this.dateFilter(type);
     },
     dateFilter(type) {
-      this.removeActiveButton();
-      document.querySelector("button.filter.date").classList.add("active");
       this.moviesList = this.moviesList.sort(this.sortByDate);
       this.cardOrder = type;
     },
@@ -104,10 +97,6 @@ export default {
         : this.popularityFilter(type);
     },
     popularityFilter(type) {
-      this.removeActiveButton();
-      document
-        .querySelector("button.filter.popularity")
-        .classList.add("active");
       this.moviesList = this.moviesList.sort(this.sortByPopularity);
       this.cardOrder = type;
     },
@@ -118,8 +107,6 @@ export default {
         : this.votesFilter(type);
     },
     votesFilter(type) {
-      this.removeActiveButton();
-      document.querySelector("button.filter.votes").classList.add("active");
       this.moviesList = this.moviesList.sort(this.sortByAverageVote);
       this.cardOrder = type;
     }
