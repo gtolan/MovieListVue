@@ -81,7 +81,7 @@ export default {
       EventBus.$emit("popularity-filter");
     },
     filterByVotes() {
-      this.removeActiveButton();
+      this.removeActiveFilterButton();
       document.querySelector("button.filter.votes").classList.add("active");
       EventBus.$emit("votes-filter");
     }
